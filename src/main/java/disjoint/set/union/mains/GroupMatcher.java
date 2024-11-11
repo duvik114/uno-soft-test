@@ -115,10 +115,10 @@ public class GroupMatcher {
         }
     }
 
-    private int printGroups(DSU dsu, long timeStart) throws GroupMatchException {
+    private int[] printGroups(DSU dsu, long timeStart) throws GroupMatchException {
         int i = 1;
-        String[] pos = new String[1];
-        Group[] groups = dsu.getGroupsAndPos(pos);
+        int[] res = new int[2];
+        Group[] groups = dsu.getGroupsAndPos(res);
         String[] stringsArray = strings.toArray(String[]::new);
 
         try {
@@ -132,7 +132,7 @@ public class GroupMatcher {
         try {
             writer = new BufferedWriter(new FileWriter(outputFile, StandardCharsets.UTF_8));
 
-            writer.write("Number of groups containing more than 1 string: " + pos[0]);
+            writer.write(String.valueOf(res[0]));
             writer.newLine();
 
             for (Group g : groups) {
@@ -143,21 +143,12 @@ public class GroupMatcher {
                     writer.newLine();
                 }
             }
-
-            writer.write("================================================================");
-            writer.newLine();
-
-            writer.write("Number of groups: " + groups.length);
-            writer.newLine();
-
-            writer.write("Done in " + ((System.currentTimeMillis() - timeStart) / 1000.0) + " seconds!");
-            writer.newLine();
-
             writer.close();
         } catch (IOException e) {
             throw new GroupMatchException("Error writing to output file: " + e.getMessage());
         }
-        return groups.length;
+        res[1] = groups.length;
+        return res;
     }
 
     private static void printUsage() {
@@ -182,16 +173,17 @@ public class GroupMatcher {
             return;
         }
 
-        int groupsCount;
+        int[] groupsCountAndPos;
         try {
-            groupsCount = groupMatcher.printGroups(dsu, timeStart);
+            groupsCountAndPos = groupMatcher.printGroups(dsu, timeStart);
         } catch (GroupMatchException e) {
             System.err.println(e.getMessage());
             return;
         }
 
         System.out.println("================================================================");
-        System.out.println("Number of groups: " + groupsCount);
+        System.out.println("Total number of groups: " + groupsCountAndPos[1]);
+        System.out.println("Number of groups containing more than 1 string: " + groupsCountAndPos[0]);
         System.out.println("Done in " + ((System.currentTimeMillis() - timeStart) / 1000.0) + " seconds!");
     }
 }

@@ -40,18 +40,18 @@ public class DSU {
         }
     }
 
-    public Group[] getGroupsAndPos(String[] posString) {
+    public Group[] getGroupsAndPos(int[] posRes) {
         Group[] res = getGroups();
-        getPos(posString, res);
+        getPos(posRes, res);
         return res;
     }
 
-    private void getPos(String[] posString, Group[] res) {
+    private void getPos(int[] posRes, Group[] res) {
         int pos = 0;
         while (pos < res.length && res[pos].getStrings().size() > 1) {
             pos++;
         }
-        posString[0] = String.valueOf(pos);
+        posRes[0] = pos;
     }
 
     private Group[] getGroups() {
